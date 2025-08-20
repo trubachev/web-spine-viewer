@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spine 4.2  Viewer</title>
+    <script src="https://unpkg.com/@esotericsoftware/spine-player@4.2.*/dist/iife/spine-player.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@esotericsoftware/spine-player@4.2.*/dist/spine-player.css"
+    />
+  </head>
+  <body>
+    <div id="player-container" style="width: 1024x; height: 768px"></div>
+
+
+    <input id="json" type="file" placeholder="json"/ multiple> </br>
+    <button id="select-files" onclick="show()">show</button>
+
+    <script>
+      const toBase64 = file => new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+      });
+
+      let player;
+
+      async function show() {
+
+        const selectedFiles = Array.from(document.getElementById("json").files);
+
+        const skeletonFile = selectedFiles.find(file => file.name.endsWith('.json'))
+        const atlasFile = selectedFiles.find(file => file.name.endsWith('.atlas'))
+        const imageFile = selectedFiles.find(file => file.name.endsWith('.webp') || file.name.endsWith('.png') || file.name.endsWith('.jpg') )
+
+        const rawDataURIs = {}
+
+        for (let file of selectedFiles) {
+          rawDataURIs[file.name] = await toBase64(file)
+        }
+
+        if (player) {
+          player.dispose()
+        }
+
+        player = new spine.SpinePlayer("player-container", {
+          skeleton: skeletonFile.name,
+          
+          atlas: atlasFile.name,
+          premultipliedAlpha: false,
+          rawDataURIs: rawDataURIs
+        })
+
+      }
+    </script>
+  </body>
+</html>

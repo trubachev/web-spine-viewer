@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "start": "parcel src/index.html"
+  },
+  "dependencies": {
+    "@esotericsoftware/spine-pixi-v8": "^4.2.88",
+    "parcel": "^2.15.4"
+  }
+}
